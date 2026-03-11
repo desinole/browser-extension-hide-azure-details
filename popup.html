@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <style>
+    body {
+      width: 240px;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      padding: 16px;
+      margin: 0;
+      background: #fafafa;
+    }
+    h3 {
+      margin: 0 0 12px;
+      font-size: 14px;
+      color: #333;
+    }
+    .toggle-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+    label {
+      font-size: 13px;
+      color: #555;
+    }
+    .switch {
+      position: relative;
+      width: 40px;
+      height: 22px;
+    }
+    .switch input { display: none; }
+    .slider {
+      position: absolute;
+      inset: 0;
+      background: #ccc;
+      border-radius: 22px;
+      cursor: pointer;
+      transition: background 0.2s;
+    }
+    .slider::before {
+      content: "";
+      position: absolute;
+      width: 16px;
+      height: 16px;
+      left: 3px;
+      bottom: 3px;
+      background: white;
+      border-radius: 50%;
+      transition: transform 0.2s;
+    }
+    input:checked + .slider { background: #0078d4; }
+    input:checked + .slider::before { transform: translateX(18px); }
+    .hint {
+      margin-top: 10px;
+      font-size: 11px;
+      color: #888;
+    }
+  </style>
+</head>
+<body>
+  <h3>🔒 Hide Azure Details</h3>
+  <div class="toggle-row">
+    <label for="toggle">Blur subscriptions</label>
+    <div class="switch">
+      <input type="checkbox" id="toggle" checked>
+      <span class="slider"></span>
+    </div>
+  </div>
+  <p class="hint">Toggle off to reveal hidden details.</p>
+  <script src="popup.js"></script>
+</body>
+</html>

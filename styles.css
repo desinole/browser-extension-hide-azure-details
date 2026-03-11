@@ -1,0 +1,4 @@
+.azure-blur-hidden {
+  filter: blur(8px);
+  user-select: none;
+}
