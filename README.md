@@ -1,36 +1,54 @@
 # Hide Azure Subscription Details
 
-A Chrome/Edge browser extension that blurs Azure subscription IDs and names on Azure portal pages. Hover over blurred text to reveal it.
+A Chrome/Edge browser extension that blurs Azure subscription IDs and names on Azure portal pages — including resource detail pages rendered in sandboxed iframes.
 
 ## Features
 
 - Automatically blurs subscription IDs (GUIDs) on Azure portal pages
-- Blurs subscription name fields adjacent to "Subscription" labels
-- Hover to temporarily reveal blurred content
+- Blurs subscription name values next to "Subscription" labels
+- Works on the home page **and** resource detail pages
 - Toggle on/off via the extension popup
 - Works with Azure portal's SPA navigation (observes DOM changes)
 
-## Installation (Local / Unpacked)
+## Installation
 
-### Chrome
+### Step 1 — Download
 
-1. Open Chrome and navigate to `chrome://extensions`
-2. Enable **Developer mode** (toggle in the top-right corner)
+Click the green **Code** button above, then **Download ZIP**. Extract the zip to a folder on your computer.
+
+Alternatively, clone the repo:
+```
+git clone https://github.com/desinole/browser-extension-hide-azure-details.git
+```
+
+### Step 2 — Load in your browser
+
+#### Microsoft Edge
+
+1. Open Edge and go to `edge://extensions`
+2. Enable **Developer mode** (toggle in the bottom-left)
 3. Click **Load unpacked**
-4. Select the `browser-extension-hide-azure-details` folder
-5. The extension icon will appear in your toolbar
+4. Select the extracted/cloned folder (the one containing `manifest.json`)
+5. The 🔒 icon will appear in your toolbar
 
-### Microsoft Edge
+#### Google Chrome
 
-1. Open Edge and navigate to `edge://extensions`
-2. Enable **Developer mode** (toggle in the left sidebar)
+1. Open Chrome and go to `chrome://extensions`
+2. Enable **Developer mode** (toggle in the top-right)
 3. Click **Load unpacked**
-4. Select the `browser-extension-hide-azure-details` folder
-5. The extension icon will appear in your toolbar
+4. Select the extracted/cloned folder (the one containing `manifest.json`)
+5. The 🔒 icon will appear in your toolbar
 
 ## Usage
 
 1. Navigate to the [Azure Portal](https://portal.azure.com)
 2. Subscription IDs and names are automatically blurred
-3. **Hover** over any blurred text to reveal it
-4. Click the extension icon in the toolbar to **toggle** blurring on/off
+3. Click the extension icon in the toolbar to **toggle** blurring on/off
+
+## How It Works
+
+Azure portal renders resource detail pages inside **sandboxed iframes**, which normally block browser extension content scripts. This extension uses a three-layer approach:
+
+1. **`strip-sandbox.js`** — Runs in the page's JavaScript context (`MAIN` world) at `document_start` to intercept and prevent the `sandbox` attribute from being applied to iframes. This allows content scripts to inject into those frames.
+2. **`styles.css`** — Pure CSS rules that blur elements with `aria-label` starting with "Subscription" — works as soon as the stylesheet is injected.
+3. **`content.js`** — Detects subscription GUIDs in text nodes, finds "Subscription" labels and blurs their adjacent value containers, and scans for Azure billing asset references.
