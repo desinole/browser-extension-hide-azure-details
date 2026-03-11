@@ -1,6 +1,10 @@
 (() => {
   "use strict";
 
+  // Prevent duplicate injection
+  if (window.__azureBlurInjected) return;
+  window.__azureBlurInjected = true;
+
   // Regex for Azure subscription IDs (GUID format)
   const SUBSCRIPTION_ID_REGEX =
     /[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}/i;
@@ -45,37 +49,57 @@
   }
 
   function processNode(root) {
-    if (!enabled) return;
+    if (!enabled || !root || !root.querySelectorAll) return;
 
+    // 1. Blur elements containing a subscription GUID in their own direct text
     const walker = document.createTreeWalker(root, NodeFilter.SHOW_ELEMENT, null);
     let node;
     while ((node = walker.nextNode())) {
-      const text = node.textContent || "";
-
-      // Blur elements whose visible text contains a subscription GUID
-      if (node.children.length === 0 && containsSubscriptionId(text)) {
-        node.classList.add(BLUR_CLASS);
-      }
-
-      // Blur values next to "Subscription" labels
-      if (node.children.length === 0 && isSubscriptionLabel(text)) {
-        blurAdjacentValue(node);
+      if (containsSubscriptionId(node.textContent || "")) {
+        let ownText = "";
+        for (const child of node.childNodes) {
+          if (child.nodeType === Node.TEXT_NODE) {
+            ownText += child.textContent;
+          }
+        }
+        if (containsSubscriptionId(ownText)) {
+          node.classList.add(BLUR_CLASS);
+        }
       }
     }
 
-    // Also scan selector-matched elements
-    AZURE_SELECTORS.forEach((sel) => {
-      try {
-        root.querySelectorAll?.(sel)?.forEach((el) => {
-          const t = el.textContent || "";
-          if (containsSubscriptionId(t)) {
-            el.classList.add(BLUR_CLASS);
-          }
-        });
-      } catch (_) {}
-    });
+    // 2. Blur essentials value containers whose aria-label starts with "Subscription"
+    try {
+      root.querySelectorAll('[aria-label^="Subscription"]').forEach((el) => {
+        if (/essentialsValue/.test(el.className)) {
+          el.classList.add(BLUR_CLASS);
+        }
+      });
+    } catch (_) {}
 
-    // Blur any element with attributes referencing the billing subscription asset
+    // 3. Find labels starting with "Subscription" (by class and text) and blur sibling values
+    try {
+      root.querySelectorAll('[class*="essentialsLabel"]').forEach((label) => {
+        let ownText = "";
+        for (const child of label.childNodes) {
+          if (child.nodeType === Node.TEXT_NODE) {
+            ownText += child.textContent;
+          }
+        }
+        if (/^\s*subscription/i.test(ownText)) {
+          let sibling = label.nextElementSibling;
+          while (sibling) {
+            if (/essentialsValue/.test(sibling.className)) {
+              sibling.classList.add(BLUR_CLASS);
+              break;
+            }
+            sibling = sibling.nextElementSibling;
+          }
+        }
+      });
+    } catch (_) {}
+
+    // 4. Blur elements with attributes referencing the billing subscription asset
     try {
       root.querySelectorAll("*").forEach((el) => {
         for (const attr of el.attributes) {
@@ -86,6 +110,17 @@
         }
       });
     } catch (_) {}
+
+    // 5. Scan selector-matched elements for subscription GUIDs
+    AZURE_SELECTORS.forEach((sel) => {
+      try {
+        root.querySelectorAll?.(sel)?.forEach((el) => {
+          if (containsSubscriptionId(el.textContent || "")) {
+            el.classList.add(BLUR_CLASS);
+          }
+        });
+      } catch (_) {}
+    });
   }
 
   function removeBlur() {

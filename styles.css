@@ -2,3 +2,10 @@
   filter: blur(8px);
   user-select: none;
 }
+
+/* Target subscription essentials values by aria-label attribute */
+[aria-label^="Subscription"][class*="essentialsValue"],
+[aria-label^="Subscription "][class*="essentialsValue"] {
+  filter: blur(8px);
+  user-select: none;
+}

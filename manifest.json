@@ -6,6 +6,12 @@
   "permissions": ["storage"],
   "content_scripts": [
     {
+      "matches": ["https://*.azure.com/*"],
+      "js": ["strip-sandbox.js"],
+      "run_at": "document_start",
+      "world": "MAIN"
+    },
+    {
       "matches": ["https://*.azure.com/*", "https://*.azure.net/*"],
       "js": ["content.js"],
       "css": ["styles.css"],
