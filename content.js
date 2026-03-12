@@ -9,18 +9,10 @@
   const SUBSCRIPTION_ID_REGEX =
     /[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}/i;
 
-  // Selectors commonly used in Azure portal for subscription info
+  // Selectors for elements that contain subscription GUIDs
   const AZURE_SELECTORS = [
     '[data-bind*="subscription"]',
-    '[aria-label*="Subscription"]',
-    '[aria-label*="subscription"]',
     '[title*="subscription" i]',
-    'span[class*="fxs-blade-title"]',
-    '.fxs-journey-breadcrumb',
-    '.msportalfx-breadcrumb',
-    '.fxc-essentials-label-container',
-    '.fxc-essentials-value-wrapper',
-    '.azc-formElementContainer',
   ];
 
   const BLUR_CLASS = "azure-blur-hidden";
@@ -28,24 +20,6 @@
 
   function containsSubscriptionId(text) {
     return SUBSCRIPTION_ID_REGEX.test(text);
-  }
-
-  function isSubscriptionLabel(text) {
-    const lower = text.toLowerCase().trim();
-    return lower === "subscription" || lower === "subscription id" || lower === "subscription name";
-  }
-
-  function blurAdjacentValue(labelEl) {
-    const parent = labelEl.closest(
-      ".fxc-essentials-item, .azc-formElementContainer, tr, [class*='property-row'], [class*='row']"
-    );
-    if (parent) {
-      parent.querySelectorAll("span, a, div, td").forEach((el) => {
-        if (el !== labelEl && el.textContent.trim().length > 0) {
-          el.classList.add(BLUR_CLASS);
-        }
-      });
-    }
   }
 
   function processNode(root) {
