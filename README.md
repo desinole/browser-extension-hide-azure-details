@@ -1,6 +1,6 @@
 # Hide Azure Subscription Details
 
-A Chrome/Edge browser extension that blurs Azure subscription IDs and names on Azure portal pages — including resource detail pages rendered in sandboxed iframes.
+A Chrome/Edge browser extension that blurs Azure subscription IDs and names on Azure portal pages including resource detail pages rendered in sandboxed iframes.
 
 ## Features
 
