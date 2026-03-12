@@ -14,12 +14,9 @@ A Chrome/Edge browser extension that blurs Azure subscription IDs and names on A
 
 ### Step 1 — Download
 
-Click the green **Code** button above, then **Download ZIP**. Extract the zip to a folder on your computer.
+[⬇ Download the extension zip](https://github.com/desinole/browser-extension-hide-azure-details/raw/main/download/hide-azure-subscription-details.zip)
 
-Alternatively, clone the repo:
-```
-git clone https://github.com/desinole/browser-extension-hide-azure-details.git
-```
+Extract the zip to a folder on your computer.
 
 ### Step 2 — Load in your browser
 

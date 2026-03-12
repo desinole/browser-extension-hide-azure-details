@@ -1,0 +1,33 @@
+name: Package Extension
+
+on:
+  push:
+    branches: [main]
+
+permissions:
+  contents: write
+
+jobs:
+  package:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Create extension zip
+        run: |
+          mkdir -p download
+          zip -r download/hide-azure-subscription-details.zip \
+            manifest.json content.js strip-sandbox.js styles.css \
+            popup.html popup.js icons/
+
+      - name: Commit and push zip
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add download/
+          if git diff --staged --quiet; then
+            echo "No changes to zip"
+          else
+            git commit -m "Update extension download zip [skip ci]"
+            git push
+          fi
