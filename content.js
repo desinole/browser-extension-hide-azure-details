@@ -141,4 +141,20 @@
       }
     }
   });
+
+  // Export for testing (Node.js / Jest)
+  if (typeof module !== "undefined" && module.exports) {
+    module.exports = {
+      containsSubscriptionId,
+      processNode,
+      removeBlur,
+      start,
+      stop,
+      BLUR_CLASS,
+      _setEnabled: (val) => {
+        enabled = val;
+      },
+      _getEnabled: () => enabled,
+    };
+  }
 })();
