@@ -48,5 +48,25 @@ git clone https://github.com/desinole/browser-extension-hide-azure-details.git
 ## How It Works
 
 1. **`background.js`** — Registers the "Hide this field" context menu item and forwards clicks to the content script.
-2. **`selector-generator.js`** — Generates a unique CSS selector for the right-clicked element using tag names, classes, IDs, and positional selectors.
-3. **`custom-hide.js`** — Applies a blur filter to stored selectors on page load, watches for dynamically added content via `MutationObserver`, and handles the context menu message to blur and save new fields.
+2. **`selector-generator.js`** — Generates a robust CSS selector for the right-clicked element. Prefers stable anchors (`id`, `data-testid`, `aria-label`), filters out dynamic class names (CSS modules, styled-components), and validates uniqueness. Also stores the element's text content as a fallback identifier.
+3. **`custom-hide.js`** — Applies blur to stored selectors on page load (with retries for SPA content), watches for dynamically added content via `MutationObserver`, and falls back to text-based matching when selectors break across page loads.
+
+## Development
+
+### Prerequisites
+
+- [Node.js](https://nodejs.org/) 20+
+
+### Install dependencies
+
+```sh
+npm install
+```
+
+### Run tests
+
+```sh
+npm test
+```
+
+Tests run automatically on pull requests targeting `main` via GitHub Actions, and can also be triggered manually via workflow dispatch.
