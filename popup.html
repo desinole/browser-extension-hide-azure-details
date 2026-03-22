@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
   <style>
     body {
-      width: 240px;
+      width: 260px;
       font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
       padding: 16px;
       margin: 0;
@@ -15,59 +15,71 @@
       font-size: 14px;
       color: #333;
     }
-    .toggle-row {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-    }
-    label {
+    h4 {
+      margin: 0 0 8px;
       font-size: 13px;
-      color: #555;
+      color: #333;
     }
-    .switch {
-      position: relative;
-      width: 40px;
-      height: 22px;
-    }
-    .switch input { display: none; }
-    .slider {
-      position: absolute;
-      inset: 0;
-      background: #ccc;
-      border-radius: 22px;
-      cursor: pointer;
-      transition: background 0.2s;
-    }
-    .slider::before {
-      content: "";
-      position: absolute;
-      width: 16px;
-      height: 16px;
-      left: 3px;
-      bottom: 3px;
-      background: white;
-      border-radius: 50%;
-      transition: transform 0.2s;
-    }
-    input:checked + .slider { background: #0078d4; }
-    input:checked + .slider::before { transform: translateX(18px); }
     .hint {
       margin-top: 10px;
       font-size: 11px;
       color: #888;
     }
+    .domain-label {
+      font-weight: normal;
+      font-size: 11px;
+      color: #888;
+    }
+    .field-item {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 4px 0;
+      border-bottom: 1px solid #f0f0f0;
+    }
+    .field-label {
+      font-size: 12px;
+      color: #555;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+      max-width: 200px;
+    }
+    .remove-btn {
+      background: none;
+      border: none;
+      color: #cc0000;
+      font-size: 16px;
+      cursor: pointer;
+      padding: 0 4px;
+      line-height: 1;
+    }
+    .remove-btn:hover { color: #ff0000; }
+    #clear-all-btn {
+      margin-top: 8px;
+      padding: 4px 10px;
+      font-size: 11px;
+      background: #f0f0f0;
+      border: 1px solid #ddd;
+      border-radius: 3px;
+      cursor: pointer;
+      color: #555;
+    }
+    #clear-all-btn:hover { background: #e0e0e0; }
+    #empty-message { margin: 4px 0; }
   </style>
 </head>
 <body>
-  <h3>🔒 Hide Azure Subscription Details</h3>
-  <div class="toggle-row">
-    <label for="toggle">Blur subscriptions</label>
-    <div class="switch">
-      <input type="checkbox" id="toggle" checked>
-      <span class="slider"></span>
-    </div>
+  <h3>🔒 Hide Fields</h3>
+  <p class="hint">Right-click any element on a page to blur it.</p>
+
+  <div id="hidden-fields-section">
+    <h4>🙈 Hidden Fields <span id="domain-label" class="domain-label"></span></h4>
+    <div id="hidden-fields-list"></div>
+    <p id="empty-message" class="hint">No hidden fields on this site.</p>
+    <button id="clear-all-btn" style="display:none">Clear All</button>
   </div>
-  <p class="hint">Toggle off to reveal hidden details.</p>
+
   <script src="popup.js"></script>
 </body>
 </html>

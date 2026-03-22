@@ -1,22 +1,23 @@
-# Hide Azure Subscription Details
+# Hide Fields — Browser Extension
 
-A Chrome/Edge browser extension that blurs Azure subscription IDs and names on Azure portal pages including resource detail pages rendered in sandboxed iframes.
+A Chrome/Edge browser extension that lets you right-click any element on any website to blur it. Hidden fields are remembered per-domain across visits.
 
 ## Features
 
-- Automatically blurs subscription IDs (GUIDs) on Azure portal pages
-- Blurs subscription name values next to "Subscription" labels
-- Works on the home page **and** resource detail pages
-- Toggle on/off via the extension popup
-- Works with Azure portal's SPA navigation (observes DOM changes)
+- **Right-click to hide** — Select any element on any page and blur it via the context menu
+- **Persistent per-domain** — Hidden fields are saved and automatically blurred on future visits
+- **Manage hidden fields** — View, remove, or clear all hidden fields from the extension popup
+- **Works on any website** — Not limited to specific domains
 
 ## Installation
 
-### Step 1 — Download
+### Step 1 — Get the extension files
 
-[⬇ Download the extension zip](https://github.com/desinole/browser-extension-hide-azure-details/raw/main/download/hide-azure-subscription-details.zip)
+Clone this repository or download it as a zip from GitHub:
 
-Extract the zip to a folder on your computer.
+```sh
+git clone https://github.com/desinole/browser-extension-hide-azure-details.git
+```
 
 ### Step 2 — Load in your browser
 
@@ -38,14 +39,14 @@ Extract the zip to a folder on your computer.
 
 ## Usage
 
-1. Navigate to the [Azure Portal](https://portal.azure.com)
-2. Subscription IDs and names are automatically blurred
-3. Click the extension icon in the toolbar to **toggle** blurring on/off
+1. Navigate to any website
+2. **Right-click** any element you want to hide
+3. Select **"Hide this field"** from the context menu
+4. The element is immediately blurred and will stay blurred on future visits
+5. Click the 🔒 extension icon to manage hidden fields — remove individual fields or clear all for the current site
 
 ## How It Works
 
-Azure portal renders resource detail pages inside **sandboxed iframes**, which normally block browser extension content scripts. This extension uses a three-layer approach:
-
-1. **`strip-sandbox.js`** — Runs in the page's JavaScript context (`MAIN` world) at `document_start` to intercept and prevent the `sandbox` attribute from being applied to iframes. This allows content scripts to inject into those frames.
-2. **`styles.css`** — Pure CSS rules that blur elements with `aria-label` starting with "Subscription" — works as soon as the stylesheet is injected.
-3. **`content.js`** — Detects subscription GUIDs in text nodes, finds "Subscription" labels and blurs their adjacent value containers, and scans for Azure billing asset references.
+1. **`background.js`** — Registers the "Hide this field" context menu item and forwards clicks to the content script.
+2. **`selector-generator.js`** — Generates a unique CSS selector for the right-clicked element using tag names, classes, IDs, and positional selectors.
+3. **`custom-hide.js`** — Applies a blur filter to stored selectors on page load, watches for dynamically added content via `MutationObserver`, and handles the context menu message to blur and save new fields.

@@ -1,10 +1,11 @@
 /**
- * Creates a mock of the chrome.storage API for testing.
- * Supports get/set on chrome.storage.local and onChanged listeners.
+ * Creates a mock of the chrome.* APIs for testing.
+ * Supports storage, tabs, runtime, and contextMenus.
  */
 function createChromeMock(initialStore = {}) {
   const store = { ...initialStore };
   const listeners = [];
+  let mockTabs = [];
 
   return {
     storage: {
@@ -38,8 +39,29 @@ function createChromeMock(initialStore = {}) {
         }),
       },
     },
+    tabs: {
+      query: jest.fn((_queryInfo, callback) => {
+        if (callback) callback(mockTabs);
+      }),
+      sendMessage: jest.fn(),
+    },
+    runtime: {
+      onMessage: {
+        addListener: jest.fn(),
+        removeListener: jest.fn(),
+      },
+    },
+    contextMenus: {
+      create: jest.fn(),
+      onClicked: {
+        addListener: jest.fn(),
+      },
+    },
     _store: store,
     _listeners: listeners,
+    _setTabs: (tabs) => {
+      mockTabs = tabs;
+    },
   };
 }
 
